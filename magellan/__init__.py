@@ -9,7 +9,7 @@ from flask_bootstrap import Bootstrap
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("config")
+    app.config.from_object("magellan.config")
 
     Bootstrap(app)
     db.init_app(app)

@@ -9,9 +9,8 @@ ENV_PREFIX = "MAGELLAN__"
 SQLALCHEMY_DATABASE_URI = os.getenv(
     f"{ENV_PREFIX}SQLALCHEMY_CONN_STRING", "sqlite:///db.sqlite"
 )
-# ""
 SECRET_KEY = os.getenv(f"{ENV_PREFIX}SECRET_KEY", "You'll never guess me!")
-APP_THEME = os.getenv(f"{ENV_PREFIX}APP_THEME", "flatly.css")
+APP_THEME = os.getenv(f"{ENV_PREFIX}THEME", "flatly.css")
 ELASTICSEARCH_URL = os.getenv(f"{ENV_PREFIX}ELASTICSEARCH_URL")
 
 

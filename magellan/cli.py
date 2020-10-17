@@ -15,10 +15,9 @@ class Magellan:
     def webserver(self, host="0.0.0.0", port=8080, debug=True):
         from magellan import create_app
 
-        self.initdb()
-
         app = create_app()
-        app.run(host=host, port=port, debug=debug)
+        # app.run(host=host, port=port, debug=debug)
+        app.run(host="0.0.0.0", port=8080, debug=True)
 
     def initdb(self):
         from magellan import create_app
