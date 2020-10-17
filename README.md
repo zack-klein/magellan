@@ -74,8 +74,8 @@ Once you have found data you find interesting in Magellan, a backend-agnostic SQ
 
 Comment feature allows different users to comment and collaborate on datasets.
 
-## Modular backend and components
-
+## Modular backend and core components
+Bring your own SQL backend and Elasticsearch to help you scale to whatever size your data catalog needs.
 
 # Roadmap
 
