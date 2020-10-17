@@ -82,4 +82,5 @@ Bring your own SQL backend and Elasticsearch to help you scale to whatever size 
 - Granular security permissions
 - Robust CLI
 - Cross-dataset, backend-agnostic SQL console
+- Integration with [pandas-profiling](https://github.com/pandas-profiling/pandas-profiling)
 - ... and more!
