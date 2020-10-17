@@ -37,7 +37,11 @@ Then Magellan is ready to go!
 magellan webserver
 ```
 
-Head to http://localhost:8080/ to see the web interface. You'll hit the login screen, so go ahead and create a user:
+Head to http://localhost:8080/ to see the web interface. You'll hit the login screen.
+
+![](./docs/imgs/splash.png)
+
+Next, go ahead and create a user:
 
 ```
 magellan create-user
