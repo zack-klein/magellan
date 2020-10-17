@@ -1,0 +1,17 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "appbuilder/base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h1 class="text-align-center">{{_("Magellan")}}</h1>
+    <div>
+      <div class="md-form mt-0">
+        <a class="btn-primary" href="{{ url_for('SearchView.search') }}">
+          <button type="button" class="btn btn-primary">Search for data</button>
+        </a>
+      </div>
+      <br>
+    </div>
+  </div>
+</div>
+{% endblock %}

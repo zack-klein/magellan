@@ -1,0 +1,82 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "appbuilder/base.html" %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Browse {{ dataset.name }}</h2>
+    </div>
+  </div>
+  <div class="row well">
+    <div class="col-md-9">
+      <h3>About this dataset</h3>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <td>{{ dataset.name }}</td>
+          </tr>
+          <tr>
+            <th>Schema</th>
+            <td>{{ dataset.schema }}</td>
+          </tr>
+          <tr>
+            <th>Description</th>
+            <td>{{ dataset.description }}</td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td>{{ dataset.type.value }}</td>
+          </tr>
+          <tr>
+            <th>Source</th>
+            <td>{{ dataset.data_source.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-3">
+      <h3> Tags </h3>
+      {% for tag in dataset.tags %}
+        <a href="{{ url_for('SearchView.q', text=tag.name) }}" class="btn label label-warning">{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row well">
+    <div class="col-md-9">
+      <h3>Fields</h3>
+      <p>
+        Coming soon!
+      </p>
+    </div>
+  </div>
+  <div class="row well">
+    <div class="col-md-9">
+      <h3>Sample</h3>
+      {{ sample_data | safe }}
+      <a type="button" class="btn btn-success" href="{{ url_for('ConsoleView.console', dataset=dataset.id) }}">
+        Launch in Query Console <i class="fa fa-external-link" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-9">
+      <h3>Discussion</h3>
+      <ul class="list-group">
+        {% if comments|length > 0 %}
+          {% for comment in comments %}
+          <li class="list-group-item">
+            <p><b>{{ comment.user.first_name }} {{ comment.user.last_name }}</b></p>
+            <p>{{ comment.comment }}</p>
+            <p class="text-muted">{{ comment.commented_at.strftime('%I:%m %p on %A %B %d, %Y') }}</p>
+          </li>
+          {% endfor %}
+        {% else %}
+          <i>No comments on this dataset... yet!</i>
+        {% endif %}
+      </ul>
+      {{ wtf.quick_form(comment_form) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

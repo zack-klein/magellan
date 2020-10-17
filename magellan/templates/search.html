@@ -1,0 +1,22 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "appbuilder/base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h2 class="text-align-center">{{_("Your search begins here!")}}</h2>
+    <div>
+      {{ wtf.quick_form(search_form) }}
+    </div>
+    <p class="primary">
+      Not sure what to look for? Try one of these:
+    </p>
+    <div>
+      {% for tag in tags[:10] %}
+      <tr>
+        <a href="{{ url_for('SearchView.q', text=tag.name) }}" class="btn label label-warning">{{ tag.name }}</a>
+      </tr>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

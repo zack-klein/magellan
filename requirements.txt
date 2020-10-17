@@ -1,0 +1,12 @@
+boto3
+elasticsearch
+fire
+flask-appbuilder
+flask-bootstrap
+fsspec
+pandas
+pandasql
+# pandas-profiling
+psycopg2-binary
+s3fs
+sqlparse
