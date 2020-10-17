@@ -4,6 +4,17 @@
 
 A simple but powerful Data Catalog built on top of Flask, Elasticsearch, and pandas.
 
+- [Magellan](#magellan)
+- [Getting started](#getting-started)
+- [Features](#features)
+  * [Automatically extract metadata-based `Dataset`s from existing sources](#automatically-extract-metadata-based--dataset-s-from-existing-sources)
+  * [Tag `Source`s and `Dataset`s with useful metadata en masse](#tag--source-s-and--dataset-s-with-useful-metadata-en-masse)
+  * [Blazing fast search with Elasticsearch](#blazing-fast-search-with-elasticsearch)
+  * [Backend-agnostic SQL console](#backend-agnostic-sql-console)
+  * [Discuss datasets with other users](#discuss-datasets-with-other-users)
+  * [Modular backend and components](#modular-backend-and-components)
+- [Roadmap](#roadmap)
+
 # Getting started
 
 :warning: This package is not yet available on PyPi! This getting started guide is not quite accurate -- but it will be soon. Stay tuned.
@@ -66,7 +77,7 @@ Comment feature allows different users to comment and collaborate on datasets.
 ## Modular backend and components
 
 
-# Roadmap...
+# Roadmap
 
 - Granular security permissions
 - Robust CLI
