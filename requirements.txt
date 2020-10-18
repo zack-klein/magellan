@@ -9,5 +9,6 @@ pandas
 pandasql
 # pandas-profiling
 psycopg2-binary
+pytest
 s3fs
 sqlparse
