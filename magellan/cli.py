@@ -16,8 +16,7 @@ class Magellan:
         from magellan import create_app
 
         app = create_app()
-        # app.run(host=host, port=port, debug=debug)
-        app.run(host="0.0.0.0", port=8080, debug=True)
+        app.run(host=host, port=port, debug=debug)
 
     def initdb(self):
         from magellan import create_app

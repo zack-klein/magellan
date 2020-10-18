@@ -2,7 +2,7 @@ version: "3.7"
 services:
   webserver:
     build: .
-    command: ["python", "magellan.py"]
+    command: ["magellan", "webserver"]
     ports:
       - 8080:8080
     volumes:
