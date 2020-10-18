@@ -52,11 +52,13 @@
   </div>
   <div class="row well">
     <div class="col-md-9">
-      <h3>Sample</h3>
-      {{ sample_data | safe }}
-      <a type="button" class="btn btn-success" href="{{ url_for('ConsoleView.console', dataset=dataset.id) }}">
-        Launch in Query Console <i class="fa fa-external-link" aria-hidden="true"></i>
-      </a>
+      <div class="container" style="overflow:scroll">
+        <h3>Sample</h3>
+        {{ sample_data | safe }}
+        <a type="button" class="btn btn-success" href="{{ url_for('ConsoleView.console', dataset=dataset.id) }}">
+          Launch in Query Console <i class="fa fa-external-link" aria-hidden="true"></i>
+        </a>
+      </div>
     </div>
   </div>
   <div class="row">
@@ -68,7 +70,7 @@
           <li class="list-group-item">
             <p><b>{{ comment.user.first_name }} {{ comment.user.last_name }}</b></p>
             <p>{{ comment.comment }}</p>
-            <p class="text-muted">{{ comment.commented_at.strftime('%I:%m %p on %A %B %d, %Y') }}</p>
+            <p class="text-muted">{{ comment.commented_at.strftime('%I:%M:%S %p on %A %B %d, %Y') }}</p>
           </li>
           {% endfor %}
         {% else %}
