@@ -22,6 +22,7 @@ app.elasticsearch = Elasticsearch(es_url)
 
 with app.app_context():
     appbuilder.init_app(
-        app, db.session,
+        app,
+        db.session,
     )
     from magellan.app import views, models  # noqa
