@@ -13,19 +13,15 @@ logger = logging.getLogger(__name__)
 
 class Magellan:
     def webserver(self, host="0.0.0.0", port=8080, debug=True):
-        from magellan import create_app
+        from magellan import app
 
-        app = create_app()
         app.run(host=host, port=port, debug=debug)
 
     def initdb(self):
-        from magellan import create_app
+        from magellan import app
         from magellan.app.database import db
 
         logger.warning("Creating database objects...")
-
-        app = create_app()
-
         with app.app_context():
             db.create_all()
 
