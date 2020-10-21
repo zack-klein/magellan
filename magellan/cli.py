@@ -4,8 +4,11 @@ import fire
 
 
 from flask import current_app
-from flask_appbuilder.security.sqla.models import User  # noqa
+from flask_appbuilder.security.sqla.models import User
 from flask_appbuilder.security.sqla.models import Role
+
+from magellan import app
+from magellan.app.database import db
 
 
 logger = logging.getLogger(__name__)
@@ -13,14 +16,9 @@ logger = logging.getLogger(__name__)
 
 class Magellan:
     def webserver(self, host="0.0.0.0", port=8080, debug=True):
-        from magellan import app
-
         app.run(host=host, port=port, debug=debug)
 
     def initdb(self):
-        from magellan import app
-        from magellan.app.database import db
-
         logger.warning("Creating database objects...")
         with app.app_context():
             db.create_all()
@@ -28,9 +26,6 @@ class Magellan:
         logger.warning("Database created successfully!")
 
     def create_admin(self, username, firstname, lastname, email, password):
-        from magellan import app
-        from magellan.app.database import db
-
         logger.warning("Creating database objects...")
         with app.app_context():
             db.create_all()
