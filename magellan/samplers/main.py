@@ -28,8 +28,7 @@ def get_df(dataset, numrows=10, samplers=SAMPLERS):
 
 
 def df_to_html(df, msg="An error occurred when trying to load the table"):
-    """
-    """
+    """"""
     if df.empty:
         html = f"""
             <div class="col">

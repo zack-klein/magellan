@@ -40,7 +40,9 @@ class SearchView(BaseView):
         random.shuffle(tags)
 
         return self.render_template(
-            "search.html", search_form=search_form, tags=tags,
+            "search.html",
+            search_form=search_form,
+            tags=tags,
         )
 
     @expose("/q/<string:text>", methods=["GET", "POST"])
@@ -151,7 +153,9 @@ class ConsoleView(BaseView):
             results = "<p>No results!</p>"
 
         return self.render_template(
-            "console.html", query_form=query_form, results=results,
+            "console.html",
+            query_form=query_form,
+            results=results,
         )
 
 
