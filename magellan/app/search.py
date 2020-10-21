@@ -11,10 +11,6 @@ def add_to_index(index, model):
     if not current_app.elasticsearch:
         return
     payload = model.to_searchable()
-    # for field in model.__searchable__:
-    #
-    #     payload[field] = modelattr
-
     current_app.elasticsearch.index(index=index, id=model.id, body=payload)
     logger.info(f"Added {model} to {index}! ID: {model.id}")
 
