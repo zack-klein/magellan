@@ -2,8 +2,6 @@
 
 A simple but powerful Data Catalog built on top of Flask, Elasticsearch, and pandas.
 
-[TOC]
-
 # Getting started
 
 :warning: **WARNING:** This package is not yet available on PyPi! This getting started guide is not quite accurate -- but it will be soon. Stay tuned.
@@ -13,8 +11,6 @@ pip install magellan-catalog
 ```
 
 :warning: **WARNING:** To really leverage Magellan, you should use it with Elasticsearch. You can bring your own Elasticsearch (running locally or via a hosted service like AWS Elasticsearch). Just point Magellan to your Elasticsearch endpoint by setting the following environment variable:
-
-Point Magellan to your Elasticsearch instance by setting the environment variable:
 
 ```
 MAGELLAN__ELASTICSEARCH_URL=localhost:9200
