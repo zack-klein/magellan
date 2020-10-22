@@ -9,6 +9,7 @@ from flask_login import current_user
 from flask_appbuilder import ModelView, expose, BaseView
 from flask_appbuilder.actions import action
 from flask_appbuilder.charts.views import GroupByChartView
+from flask_appbuilder.security.decorators import has_access
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder.models.group import aggregate_count
 
@@ -26,6 +27,7 @@ class SearchView(BaseView):
     route_base = "/search"
     default_view = "search"
 
+    @has_access
     @expose("/", methods=["GET", "POST"])
     def search(self):
         search_form = SearchForm()
@@ -45,6 +47,7 @@ class SearchView(BaseView):
             tags=tags,
         )
 
+    @has_access
     @expose("/q/<string:text>", methods=["GET", "POST"])
     def q(self, text):
         search_form = SearchForm()
@@ -64,6 +67,7 @@ class SearchView(BaseView):
             search_form=search_form,
         )
 
+    @has_access
     @expose("/browse/<int:dataset_id>", methods=["GET", "POST"])
     def browse(self, dataset_id):
         dataset = db.session.query(models.Dataset).get_or_404(dataset_id)
@@ -100,6 +104,7 @@ class ConsoleView(BaseView):
     route_base = "/console"
     default_view = "console"
 
+    @has_access
     @expose("/", methods=["GET", "POST"])
     def console(self, *args, **kwargs):
 
