@@ -1,37 +1,22 @@
 # Magellan
 
-![Magellan Cartoon](./docs/imgs/magellan.png)
-
 A simple but powerful Data Catalog built on top of Flask, Elasticsearch, and pandas.
-
-- [Magellan](#magellan)
-- [Getting started](#getting-started)
-- [Features](#features)
-  * [Automatically extract metadata-based `Dataset`s from existing sources](#automatically-extract-metadata-based--dataset-s-from-existing-sources)
-  * [Tag `Source`s and `Dataset`s with useful metadata en masse](#tag--source-s-and--dataset-s-with-useful-metadata-en-masse)
-  * [Blazing fast search with Elasticsearch](#blazing-fast-search-with-elasticsearch)
-  * [Backend-agnostic SQL console](#backend-agnostic-sql-console)
-  * [Discuss datasets with other users](#discuss-datasets-with-other-users)
-  * [Modular backend and components](#modular-backend-and-components)
-- [Roadmap](#roadmap)
 
 # Getting started
 
-:warning: This package is not yet available on PyPi! This getting started guide is not quite accurate -- but it will be soon. Stay tuned.
+:warning: **WARNING:** This package is not yet available on PyPi! This getting started guide is not quite accurate -- but it will be soon. Stay tuned.
 
 ```
 pip install magellan-catalog
 ```
 
-:warning: Magellan will only work if you have Elasticsearch running!
-
-Point Magellan to your Elasticsearch instance by setting the environment variable:
+:warning: **WARNING:** To really leverage Magellan, you should use it with Elasticsearch. You can bring your own Elasticsearch (running locally or via a hosted service like AWS Elasticsearch). Just point Magellan to your Elasticsearch endpoint by setting the following environment variable:
 
 ```
 MAGELLAN__ELASTICSEARCH_URL=localhost:9200
 ```
 
-Then Magellan is ready to go!
+:white_check_mark: That's all you need! Magellan is now ready to go:
 
 ```
 magellan webserver
@@ -41,11 +26,14 @@ Head to http://localhost:8080/ to see the web interface. You'll hit the login sc
 
 ![](./docs/imgs/splash.png)
 
-Next, go ahead and create a user:
+Next, go ahead and create an admin user:
 
 ```
-magellan create-user
+magellan create-admin
 ```
+
+
+:warning: **WARNING:** You should really only create *the first user* via the CLI. Other users can be handled via the Flask FAB UI.
 
 # Features
 
