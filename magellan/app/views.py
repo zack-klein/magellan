@@ -58,7 +58,25 @@ class SearchView(BaseView):
             )
 
         # TODO: Add pagination
-        results, total = models.Dataset.search(text, 1, 100)
+        dataset_results, dataset_total = models.Dataset.search(text, 1, 100)
+        data_source_results, data_source_total = models.DataSource.search(
+            text, 1, 100
+        )
+        tag_results, tag_total = models.DatasetTag.search(text, 1, 100)
+        comment_results, comment_total = models.DatasetComment.search(
+            text, 1, 100
+        )
+
+        results = []
+        results += dataset_results
+        results += data_source_results
+        results += tag_results
+        results += comment_results
+
+        total = sum(
+            [dataset_total, data_source_total, tag_total, comment_total]
+        )
+
         return self.render_template(
             "search_results.html",
             results=results,
