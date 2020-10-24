@@ -23,6 +23,7 @@ class DataSource(db.Model, SearchableMixin):
     """
 
     __searchable__ = ["name", "description", "type"]
+    __type__ = "source"
 
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
@@ -30,6 +31,7 @@ class DataSource(db.Model, SearchableMixin):
     connection_string = db.Column(db.String(300))
     type = db.Column(db.Enum(DataSourceTypes), nullable=False)
     extras = db.Column(db.Text)
+    icon = "fa-database"
 
     def __str__(self):
         return str(self.name)
@@ -103,6 +105,7 @@ class Dataset(db.Model, SearchableMixin):
     """
 
     __searchable__ = ["name", "description", "type", "tags"]
+    __type__ = "dataset"
 
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(300), nullable=False)
@@ -119,6 +122,7 @@ class Dataset(db.Model, SearchableMixin):
         backref="dataset",
         doc="Attributes of this data set.",
     )
+    icon = "fa-table"
 
     def __str__(self):
         return str(self.name)
@@ -142,9 +146,11 @@ class DatasetTag(db.Model, SearchableMixin):
     """
 
     __searchable__ = ["name"]
+    __type__ = "tag"
 
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80))
+    icon = "fa-tag"
 
     def __str__(self):
         return str(self.name)
@@ -164,6 +170,7 @@ class DatasetComment(db.Model, SearchableMixin):
     """
 
     __searchable__ = ["comments"]
+    __type__ = "comment"
 
     id = db.Column(db.Integer(), primary_key=True)
     comment = db.Column(db.String(300), nullable=False)
@@ -176,6 +183,7 @@ class DatasetComment(db.Model, SearchableMixin):
     )
     dataset = relationship("Dataset")
     commented_at = db.Column(db.DateTime, nullable=False)
+    icon = "fa-comment"
 
     def __str__(self):
         return f"{self.user.username} (Comment)"

@@ -1,34 +1,75 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "appbuilder/base.html" %}
 {% block content %}
-<div class="jumbotron">
-  <div class="container">
-    <h1 class="text-align-center">{{_("Magellan")}}</h1>
-    <div>
-      {{ wtf.quick_form(search_form) }}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h3>Found {{ total }} results for search '{{ search_term }}':</h3>
+      <div>
+        {{ wtf.quick_form(search_form) }}
+      </div>
     </div>
-    <h5>Found {{ total }} results for search '{{ search_term }}':</h5>
-    <div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Data Source</th>
-            <th scope="col">Tags</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for result in results %}
-          <tr>
-            <td><a href="{{ url_for('SearchView.browse', dataset_id=result.id) }}">{{ result.name }}</a></td>
-            <td>{{ result.description }}</td>
-            <td>{{ result.data_source.name }}</td>
-            <td>{{ result.tags }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="col-auto">
+      <!-- TODO: Add filters! -->
+    </div>
+  </div>
+  <div class="row well">
+    <div class="col">
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Type</th>
+              <th scope="col">Tags</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in results %}
+            <tr>
+              <td>
+                <span>
+                  <i class="fa {{ result.icon }}" aria-hidden="true"></i>
+                </span>
+                {% if result.__type__ == "dataset" %}
+                  <a href="{{ url_for('SearchView.browse', dataset_id=result.id) }}">
+                    {{ result.name }}
+                {% elif result.__type__ == "comment" %}
+                  <a href="{{ url_for('SearchView.browse', dataset_id=result.dataset_id) }}">
+                    {{ result.comment[:40] }}...
+                {% else %}
+                  <a href="{{ url_for('SearchView.q', text=result.name) }}">
+                    {{ result.name }}
+                {% endif %}
+                  </a>
+              </td>
+              <td>
+                {% if result.__type__ == "comment" %}
+                  Comment by {{ result.user.username }}
+                {% elif not description %}
+                  <i>No description provided... yet!</i>
+                {% else %}
+                  {{ result.description }}
+                {% endif %}
+              </td>
+              <td>{{ result.__type__.title() }}</td>
+              <td>
+                {% if result.__type__ == "comment" %}
+                  {% for tag in result.dataset.tags %}
+                  <a href="{{ url_for('SearchView.q', text=tag.name) }}" class="btn label label-warning">{{ tag.name }}</a>
+                  {% endfor %}
+                {% else %}
+                  {% for tag in result.tags %}
+                  <a href="{{ url_for('SearchView.q', text=tag.name) }}" class="btn label label-warning">{{ tag.name }}</a>
+                  {% endfor %}
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
