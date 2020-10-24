@@ -4,4 +4,4 @@ black magellan --line-length 79 --check
 
 flake8 magellan
 
-pytest -v tests
+coverage run -m pytest -v && coverage report -m
