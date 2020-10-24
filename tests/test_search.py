@@ -3,7 +3,7 @@ import datetime
 from magellan.app import models
 from magellan.app.database import db
 
-from tests.test_app import admin_login, get_admin
+from tests.test_app import client, admin_login, get_admin  # noqa
 
 
 DUMMY_DATA_SOURCE = "Top secret information"
@@ -17,7 +17,7 @@ DUMMY_SCHEMA = "foobarbaz"
 DUMMY_COMMENT = "Et tu, Brute?"
 
 
-def build_dummy_data(client):
+def build_dummy_data(client):  # noqa
     admin_login(client)
     user = get_admin()
     data_source = models.DataSource(
@@ -56,5 +56,5 @@ def build_dummy_data(client):
     db.session.commit()
 
 
-def test_dummy_data_exists(client):
+def test_dummy_data_exists(client):  # noqa
     build_dummy_data(client)
