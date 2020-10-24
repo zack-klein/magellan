@@ -1,15 +1,21 @@
 """
 Tests the presentation logic of the Flask application.
 """
+import logging
 
 import pytest
 
 from flask import current_app
 
+from flask_appbuilder.security.sqla.models import (
+    User,
+    PermissionView,
+)
+
 from magellan import app
 from magellan.app.database import db
 
-# from flask_appbuilder.security.sqla.models import Role
+from flask_appbuilder.security.sqla.models import Role
 
 
 FAKE_ADMIN_USER = "Indiana Jones"
@@ -19,9 +25,29 @@ FAKE_ADMIN_EMAIL = "indiana@jones.com"
 FAKE_ADMIN_PASS = "I'm too old for this ish."
 
 
+# TODO: Move all this set up stuff into a tests/utils.py
+def create_admin_role():
+    current_app.appbuilder.add_permissions(update_perms=False)
+    role_name = app.config["AUTH_ROLE_ADMIN"]
+    permission_views = db.session.query(PermissionView).all()
+    logging.warning(
+        f"Admin role doesn't exist. Creating: '{role_name}' "
+        f"with permissions: {permission_views}"
+    )
+
+    role = Role(
+        name=role_name,
+        permissions=permission_views,
+    )
+    db.session.add(role)
+    db.session.commit()
+
+
 def create_dummy_user(client):
-    role_admin = current_app.appbuilder.sm.find_role(
-        current_app.appbuilder.sm.auth_role_admin
+    role_admin = (
+        db.session.query(Role)
+        .filter(Role.name == app.config["AUTH_ROLE_ADMIN"])
+        .first()
     )
     current_app.appbuilder.sm.add_user(
         FAKE_ADMIN_USER,
@@ -33,11 +59,17 @@ def create_dummy_user(client):
     )
 
 
-def login(client, username, password):
+def admin_login(client):
     return client.post(
         "/login",
-        data=dict(username=username, password=password),
+        data=dict(username=FAKE_ADMIN_USER, password=FAKE_ADMIN_PASS),
         follow_redirects=True,
+    )
+
+
+def get_admin():
+    return (
+        db.session.query(User).filter(User.username == FAKE_ADMIN_USER).first()
     )
 
 
@@ -50,16 +82,20 @@ def client():
     app.config["TESTING"] = True
     app.config["CSRF_ENABLED"] = False
     app.config["WTF_CSRF_ENABLED"] = False
+    app.elasticsearch = None
 
     with app.test_client() as client:
         with app.app_context():
-
+            db.drop_all()
             db.create_all()
             from magellan.app import views, models  # noqa
 
+            logging.warning(f"DB Connection: {db.engine}")
+            create_admin_role()
             create_dummy_user(client)
 
             yield client
+            db.drop_all()
 
 
 def test_home_page(client):
@@ -79,7 +115,7 @@ def test_not_logged_in_gets_login_page(client):
 
 
 def test_logged_in_admin_sees_all_index_bars(client):
-    login(client, FAKE_ADMIN_USER, FAKE_ADMIN_PASS)
+    admin_login(client)
     assert b"Security" in client.get("/").data
     assert b"Find Data" in client.get("/").data
     assert b"Govern" in client.get("/").data
