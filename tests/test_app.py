@@ -4,9 +4,10 @@ Tests the presentation logic of the Flask application.
 
 import pytest
 
+from flask import current_app
+
 from magellan import app
 from magellan.app.database import db
-
 
 # from flask_appbuilder.security.sqla.models import Role
 
@@ -19,22 +20,17 @@ FAKE_ADMIN_PASS = "I'm too old for this ish."
 
 
 def create_dummy_user(client):
-    pass
-    # role_admin = current_app.appbuilder.sm.find_role(
-    #     current_app.appbuilder.sm.auth_role_admin
-    # )
-    # # if not role_admin:
-    # roles = db.session.query(Role).all()
-    # print(f"ROLES ARE: {roles}")
-    # print(f"ROLE ADMIN IS: {role_admin}")
-    # user = current_app.appbuilder.sm.add_user(
-    #     FAKE_ADMIN_USER,
-    #     FAKE_ADMIN_FN,
-    #     FAKE_ADMIN_LAST,
-    #     FAKE_ADMIN_EMAIL,
-    #     role_admin,
-    #     FAKE_ADMIN_PASS,
-    # )
+    role_admin = current_app.appbuilder.sm.find_role(
+        current_app.appbuilder.sm.auth_role_admin
+    )
+    current_app.appbuilder.sm.add_user(
+        FAKE_ADMIN_USER,
+        FAKE_ADMIN_FN,
+        FAKE_ADMIN_LAST,
+        FAKE_ADMIN_EMAIL,
+        role_admin,
+        FAKE_ADMIN_PASS,
+    )
 
 
 def login(client, username, password):
@@ -52,14 +48,18 @@ def logout(client):
 @pytest.fixture
 def client():
     app.config["TESTING"] = True
+    app.config["CSRF_ENABLED"] = False
+    app.config["WTF_CSRF_ENABLED"] = False
 
     with app.test_client() as client:
         with app.app_context():
+
             db.create_all()
             from magellan.app import views, models  # noqa
 
+            create_dummy_user(client)
+
             yield client
-            db.drop_all()
 
 
 def test_home_page(client):
@@ -78,6 +78,9 @@ def test_not_logged_in_gets_login_page(client):
     assert b"Sign In" in client.get("/login/").data
 
 
-# TODO: I can't for the life of me get login functionality to work in the
-# tests. My suspicion is it is because of some flask_appbuilder internals,
-# but it should get figured out.
+def test_logged_in_admin_sees_all_index_bars(client):
+    login(client, FAKE_ADMIN_USER, FAKE_ADMIN_PASS)
+    assert b"Security" in client.get("/").data
+    assert b"Find Data" in client.get("/").data
+    assert b"Govern" in client.get("/").data
+    assert b"Analyze" in client.get("/").data
