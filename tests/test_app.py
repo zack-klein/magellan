@@ -82,7 +82,6 @@ def client():
     app.config["TESTING"] = True
     app.config["CSRF_ENABLED"] = False
     app.config["WTF_CSRF_ENABLED"] = False
-    # app.elasticsearch = None
 
     with app.test_client() as client:
         with app.app_context():
