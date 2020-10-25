@@ -1,4 +1,7 @@
 from flask import Flask
+from flask import flash
+
+from flask_login import current_user
 
 from elasticsearch import Elasticsearch
 
@@ -18,7 +21,10 @@ es_url = (
     if app.config["ELASTICSEARCH_URL"]
     else None
 )
-app.elasticsearch = Elasticsearch(es_url)
+if es_url:
+    app.elasticsearch = Elasticsearch(es_url)
+else:
+    app.elasticsearch = None
 
 with app.app_context():
     appbuilder.init_app(
@@ -26,3 +32,12 @@ with app.app_context():
         db.session,
     )
     from magellan.app import views, models  # noqa
+
+    @app.before_request
+    def before_request():
+        if current_user.is_authenticated and not app.elasticsearch:
+            flash(
+                "No elasticsearch running! Search functionality will be "
+                "severely degraded.",
+                "danger",
+            )
