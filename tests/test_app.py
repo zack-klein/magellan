@@ -82,7 +82,6 @@ def client():
     app.config["TESTING"] = True
     app.config["CSRF_ENABLED"] = False
     app.config["WTF_CSRF_ENABLED"] = False
-    app.elasticsearch = None
 
     with app.test_client() as client:
         with app.app_context():
@@ -120,3 +119,4 @@ def test_logged_in_admin_sees_all_index_bars(client):
     assert b"Find Data" in client.get("/").data
     assert b"Govern" in client.get("/").data
     assert b"Analyze" in client.get("/").data
+    logout(client)
