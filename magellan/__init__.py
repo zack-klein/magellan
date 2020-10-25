@@ -1,20 +1,24 @@
 from flask import Flask
 from flask import flash
 
+from flask_bootstrap import Bootstrap
+from flask_migrate import Migrate
+
 from flask_login import current_user
 
 from elasticsearch import Elasticsearch
 
 from magellan.app.database import db
 from magellan.app.fab import appbuilder
-from flask_bootstrap import Bootstrap
 
 
 app = Flask(__name__)
 app.config.from_object("magellan.config")
 
 Bootstrap(app)
+migrate = Migrate()
 db.init_app(app)
+migrate.init_app(app, db)
 
 es_url = (
     app.config["ELASTICSEARCH_URL"]

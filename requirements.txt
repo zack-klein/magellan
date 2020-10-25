@@ -4,6 +4,7 @@ elasticsearch
 fire
 flask-appbuilder
 flask-bootstrap
+flask-migrate
 fsspec
 pandas
 pandasql

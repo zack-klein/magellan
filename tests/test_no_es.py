@@ -8,5 +8,4 @@ def test_no_es_warning_does_not_show_for_anonymous(client):  # noqa
 def test_no_es_warning_shows_for_admins(client):  # noqa
     admin_login(client)
     assert b"No elasticsearch running!" in client.get("/").data
-    assert b"No elasticsearch running!" in client.get("/search/").data
     logout(client)

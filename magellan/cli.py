@@ -2,10 +2,10 @@ import logging
 
 import fire
 
-
 from flask import current_app
 from flask_appbuilder.security.sqla.models import User
 from flask_appbuilder.security.sqla.models import Role
+from flask_migrate import upgrade, downgrade
 
 from magellan import app
 from magellan.app.database import db
@@ -47,6 +47,14 @@ class Magellan:
                 print(f"Admin user: {username} successfully created!")
             else:
                 print(f"Admin user: {username} already exists!")
+
+    def upgradedb(self):
+        with app.app_context():
+            upgrade()
+
+    def downgradedb(self):
+        with app.app_context():
+            downgrade()
 
 
 def main():
