@@ -23,6 +23,16 @@ FAKE_ADMIN_LAST = "Jones"
 FAKE_ADMIN_EMAIL = "indiana@jones.com"
 FAKE_ADMIN_PASS = "I'm too old for this ish."
 
+DUMMY_DATA_SOURCE = "Top secret information"
+DUMMY_DESCRIPTION = "It's really top secret!"
+DUMMY_CONNECTION_STRING = "s3://foo/bar"
+DUMMY_DATA_SOURCE_TYPE = models.DataSourceTypes.s3_bucket
+DUMMY_TAG = "Top Secret"
+DUMMY_DATASET = "Something top secret"
+DUMMY_DATASET_TYPE = models.DataItemTypes.csv
+DUMMY_SCHEMA = "foobarbaz"
+DUMMY_COMMENT = "Et tu, Brute?"
+
 
 def create_dummy_admin(client):
     role_admin = (
@@ -56,17 +66,6 @@ def get_admin():
 
 def logout(client):
     return client.get("/logout", follow_redirects=True)
-
-
-DUMMY_DATA_SOURCE = "Top secret information"
-DUMMY_DESCRIPTION = "It's really top secret!"
-DUMMY_CONNECTION_STRING = "s3://foo/bar"
-DUMMY_DATA_SOURCE_TYPE = models.DataSourceTypes.s3_bucket
-DUMMY_TAG = "Top Secret"
-DUMMY_DATASET = "Something top secret"
-DUMMY_DATASET_TYPE = models.DataItemTypes.csv
-DUMMY_SCHEMA = "foobarbaz"
-DUMMY_COMMENT = "Et tu, Brute?"
 
 
 def build_dummy_data(client):  # noqa
