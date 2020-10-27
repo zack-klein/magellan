@@ -1,7 +1,5 @@
-"""
-Tests the presentation logic of the Flask application.
-"""
 import logging
+import datetime
 
 import pytest
 
@@ -13,6 +11,7 @@ from flask_appbuilder.security.sqla.models import (
 )
 
 from magellan import app
+from magellan.app import models
 from magellan.app.database import db
 
 from flask_appbuilder.security.sqla.models import Role
@@ -24,26 +23,18 @@ FAKE_ADMIN_LAST = "Jones"
 FAKE_ADMIN_EMAIL = "indiana@jones.com"
 FAKE_ADMIN_PASS = "I'm too old for this ish."
 
-
-# TODO: Move all this set up stuff into a tests/utils.py
-# def create_admin_role():
-#     current_app.appbuilder.add_permissions(update_perms=True)
-#     role_name = app.config["AUTH_ROLE_ADMIN"]
-#     permission_views = db.session.query(PermissionView).all()
-#     logging.warning(
-#         f"Admin role doesn't exist. Creating: '{role_name}' "
-#         f"with permissions: {permission_views}"
-#     )
-#
-#     role = Role(
-#         name=role_name,
-#         permissions=permission_views,
-#     )
-#     db.session.add(role)
-#     db.session.commit()
+DUMMY_DATA_SOURCE = "Top secret information"
+DUMMY_DESCRIPTION = "It's really top secret!"
+DUMMY_CONNECTION_STRING = "s3://foo/bar"
+DUMMY_DATA_SOURCE_TYPE = models.DataSourceTypes.s3_bucket
+DUMMY_TAG = "Top Secret"
+DUMMY_DATASET = "Something top secret"
+DUMMY_DATASET_TYPE = models.DataItemTypes.csv
+DUMMY_SCHEMA = "foobarbaz"
+DUMMY_COMMENT = "Et tu, Brute?"
 
 
-def create_dummy_user(client):
+def create_dummy_admin(client):
     role_admin = (
         db.session.query(Role)
         .filter(Role.name == app.config["AUTH_ROLE_ADMIN"])
@@ -77,6 +68,44 @@ def logout(client):
     return client.get("/logout", follow_redirects=True)
 
 
+def build_dummy_data(client):  # noqa
+    user = get_admin()
+    data_source = models.DataSource(
+        name=DUMMY_DATA_SOURCE,
+        description=DUMMY_DESCRIPTION,
+        connection_string=DUMMY_CONNECTION_STRING,
+        type=DUMMY_DATA_SOURCE_TYPE,
+    )
+    tag = models.DatasetTag(name=DUMMY_TAG)
+    dataset = models.Dataset(
+        name=DUMMY_DATASET,
+        schema=DUMMY_SCHEMA,
+        description=DUMMY_DESCRIPTION,
+        type=DUMMY_DATASET_TYPE,
+    )
+    dataset.data_source = data_source
+    dataset.tags = [tag]
+    db.session.add_all(
+        [
+            dataset,
+            data_source,
+            tag,
+        ]
+    )
+
+    db.session.commit()
+
+    # Comment needs a valid dataset ID
+    comment = models.DatasetComment(
+        comment=DUMMY_COMMENT,
+        user_id=user.id,
+        dataset_id=dataset.id,
+        commented_at=datetime.datetime.now(),
+    )
+    db.session.add(comment)
+    db.session.commit()
+
+
 @pytest.fixture
 def client():
     app.config["TESTING"] = True
@@ -93,32 +122,7 @@ def client():
             current_app.appbuilder.sm.create_db()
             current_app.appbuilder.add_permissions(update_perms=True)
             current_app.appbuilder.sm.create_db()
-            create_dummy_user(client)
+            create_dummy_admin(client)
 
             yield client
             db.drop_all()
-
-
-def test_home_page(client):
-    assert b"Magellan" in client.get("/").data
-
-
-def test_not_logged_in_cant_see_admin_panes(client):
-    assert b"Govern" not in client.get("/").data
-    assert b"Analyze" not in client.get("/").data
-    assert b"Find Data" not in client.get("/").data
-
-
-def test_not_logged_in_gets_login_page(client):
-    assert b"Username" in client.get("/login/").data
-    assert b"Password" in client.get("/login/").data
-    assert b"Sign In" in client.get("/login/").data
-
-
-def test_logged_in_admin_sees_all_index_bars(client):
-    admin_login(client)
-    assert b"Security" in client.get("/").data
-    assert b"Find Data" in client.get("/").data
-    assert b"Govern" in client.get("/").data
-    assert b"Analyze" in client.get("/").data
-    logout(client)
