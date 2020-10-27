@@ -1,4 +1,4 @@
-from tests.test_app import client, admin_login, get_admin, logout  # noqa
+from tests.utils import client, admin_login, get_admin, logout  # noqa
 
 
 def test_no_es_warning_does_not_show_for_anonymous(client):  # noqa

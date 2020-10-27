@@ -1,5 +1,11 @@
-from tests.test_app import client, admin_login, get_admin, logout  # noqa
-from tests.test_search import build_dummy_data, DUMMY_DATA_SOURCE
+from tests.utils import (
+    client,
+    admin_login,
+    get_admin,
+    logout,
+    build_dummy_data,
+    DUMMY_DATA_SOURCE,
+)
 
 from magellan.app import models
 from magellan.app.database import db
