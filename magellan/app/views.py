@@ -200,6 +200,18 @@ class DataSourceView(ModelView):
     route_base = "/sources"
     datamodel = SQLAInterface(models.DataSource)
 
+    edit_columns = [
+        "name",
+        "description",
+        "type",
+    ]
+
+    show_columns = [
+        "name",
+        "description",
+        "type",
+    ]
+
     list_columns = [
         "name",
         "description",

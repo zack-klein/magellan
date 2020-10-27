@@ -9,7 +9,7 @@ from flask import current_app
 
 from flask_appbuilder.security.sqla.models import (
     User,
-    PermissionView,
+    # PermissionView,
 )
 
 from magellan import app
@@ -26,21 +26,21 @@ FAKE_ADMIN_PASS = "I'm too old for this ish."
 
 
 # TODO: Move all this set up stuff into a tests/utils.py
-def create_admin_role():
-    current_app.appbuilder.add_permissions(update_perms=False)
-    role_name = app.config["AUTH_ROLE_ADMIN"]
-    permission_views = db.session.query(PermissionView).all()
-    logging.warning(
-        f"Admin role doesn't exist. Creating: '{role_name}' "
-        f"with permissions: {permission_views}"
-    )
-
-    role = Role(
-        name=role_name,
-        permissions=permission_views,
-    )
-    db.session.add(role)
-    db.session.commit()
+# def create_admin_role():
+#     current_app.appbuilder.add_permissions(update_perms=True)
+#     role_name = app.config["AUTH_ROLE_ADMIN"]
+#     permission_views = db.session.query(PermissionView).all()
+#     logging.warning(
+#         f"Admin role doesn't exist. Creating: '{role_name}' "
+#         f"with permissions: {permission_views}"
+#     )
+#
+#     role = Role(
+#         name=role_name,
+#         permissions=permission_views,
+#     )
+#     db.session.add(role)
+#     db.session.commit()
 
 
 def create_dummy_user(client):
@@ -90,7 +90,9 @@ def client():
             from magellan.app import views, models  # noqa
 
             logging.warning(f"DB Connection: {db.engine}")
-            create_admin_role()
+            current_app.appbuilder.sm.create_db()
+            current_app.appbuilder.add_permissions(update_perms=True)
+            current_app.appbuilder.sm.create_db()
             create_dummy_user(client)
 
             yield client
