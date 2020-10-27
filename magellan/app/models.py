@@ -1,5 +1,7 @@
 import enum
 
+from flask_login import current_user
+
 from sqlalchemy.orm import relationship
 
 from magellan.app.database import db, SearchableMixin
@@ -64,6 +66,15 @@ class DataSource(db.Model, SearchableMixin):
             "description": self.description,
             "type": self.type.value,
         }
+
+    def user_has_access(self):
+
+        for role in self.roles:
+
+            if role in current_user.roles:
+                return True
+
+        return False
 
 
 data_source_rules_dataset_tags = db.Table(
@@ -176,6 +187,15 @@ class Dataset(db.Model, SearchableMixin):
             "tags": " ".join([t.name for t in self.tags]),
             "data_source": self.data_source.name,
         }
+
+    def user_has_access(self):
+
+        for role in self.data_source.roles:
+
+            if role in current_user.roles:
+                return True
+
+        return False
 
 
 class DatasetTag(db.Model, SearchableMixin):

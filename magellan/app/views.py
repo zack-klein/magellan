@@ -68,14 +68,12 @@ class SearchView(BaseView):
         )
 
         results = []
-        results += dataset_results
-        results += data_source_results
+        results += [d for d in dataset_results if d.user_has_access()]
+        results += [d for d in data_source_results if d.user_has_access()]
         results += tag_results
         results += comment_results
 
-        total = sum(
-            [dataset_total, data_source_total, tag_total, comment_total]
-        )
+        total = len(results)
 
         return self.render_template(
             "search_results.html",
@@ -204,6 +202,7 @@ class DataSourceView(ModelView):
         "name",
         "description",
         "type",
+        "roles",
     ]
 
     show_columns = [
