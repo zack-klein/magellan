@@ -41,10 +41,20 @@ def df_to_html(df, msg="An error occurred when trying to load the table"):
     return html
 
 
-def get_sample_data(dataset, numrows=10, samplers=SAMPLERS):
+def mask_field(row):
+    return "*" * len(row)
+
+
+def get_sample_data(dataset, masked_fields=[], numrows=10, samplers=SAMPLERS):
     """
     Grabs a sample from a dataset
     """
     sample_df = get_df(dataset, numrows=numrows)
+
+    for field in masked_fields:
+
+        if field in sample_df.columns:
+            sample_df[field] = sample_df[field].apply(mask_field)
+
     html = df_to_html(sample_df)
     return html
