@@ -1,5 +1,7 @@
 import enum
 
+from flask_login import current_user
+
 from sqlalchemy.orm import relationship
 
 from magellan.app.database import db, SearchableMixin
@@ -17,6 +19,19 @@ class DataSourceTypes(enum.Enum):
     sqlalchemy = "SQLAlchemy Connection"
 
 
+roles_data_source = db.Table(
+    "roles_data_source",
+    db.Model.metadata,
+    db.Column("id", db.Integer, primary_key=True),
+    db.Column(
+        "data_source",
+        db.Integer(),
+        db.ForeignKey("data_source.id"),
+    ),
+    db.Column("role_id", db.Integer(), db.ForeignKey("ab_role.id")),
+)
+
+
 class DataSource(db.Model, SearchableMixin):
     """
     A connection to a database via SQLAlchemy.
@@ -31,6 +46,12 @@ class DataSource(db.Model, SearchableMixin):
     connection_string = db.Column(db.String(300))
     type = db.Column(db.Enum(DataSourceTypes), nullable=False)
     extras = db.Column(db.Text)
+    roles = relationship(
+        "Role",
+        secondary=roles_data_source,
+        backref="data_source",
+        doc="Roles that are allowed to see this data source.",
+    )
     icon = "fa-database"
 
     def __str__(self):
@@ -45,6 +66,15 @@ class DataSource(db.Model, SearchableMixin):
             "description": self.description,
             "type": self.type.value,
         }
+
+    def user_has_access(self):
+
+        for role in self.roles:
+
+            if role in current_user.roles:
+                return True
+
+        return False
 
 
 data_source_rules_dataset_tags = db.Table(
@@ -99,6 +129,19 @@ datasets_dataset_tags = db.Table(
 )
 
 
+roles_dataset = db.Table(
+    "roles_dataset",
+    db.Model.metadata,
+    db.Column("id", db.Integer, primary_key=True),
+    db.Column(
+        "dataset",
+        db.Integer(),
+        db.ForeignKey("dataset.id"),
+    ),
+    db.Column("role_id", db.Integer(), db.ForeignKey("ab_role.id")),
+)
+
+
 class Dataset(db.Model, SearchableMixin):
     """
     A human created semantic layer created on top of a data item.
@@ -122,6 +165,12 @@ class Dataset(db.Model, SearchableMixin):
         backref="dataset",
         doc="Attributes of this data set.",
     )
+    roles = relationship(
+        "Role",
+        secondary=roles_dataset,
+        backref="dataset",
+        doc="Roles that are allowed to see this data set.",
+    )
     icon = "fa-table"
 
     def __str__(self):
@@ -138,6 +187,15 @@ class Dataset(db.Model, SearchableMixin):
             "tags": " ".join([t.name for t in self.tags]),
             "data_source": self.data_source.name,
         }
+
+    def user_has_access(self):
+
+        for role in self.data_source.roles:
+
+            if role in current_user.roles:
+                return True
+
+        return False
 
 
 class DatasetTag(db.Model, SearchableMixin):

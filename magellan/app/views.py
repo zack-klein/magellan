@@ -2,7 +2,7 @@ import datetime
 import random
 import sqlparse
 
-from flask import redirect, flash, request, url_for
+from flask import redirect, flash, request, url_for, abort
 
 from flask_login import current_user
 
@@ -68,14 +68,12 @@ class SearchView(BaseView):
         )
 
         results = []
-        results += dataset_results
-        results += data_source_results
+        results += [d for d in dataset_results if d.user_has_access()]
+        results += [d for d in data_source_results if d.user_has_access()]
         results += tag_results
         results += comment_results
 
-        total = sum(
-            [dataset_total, data_source_total, tag_total, comment_total]
-        )
+        total = len(results)
 
         return self.render_template(
             "search_results.html",
@@ -89,6 +87,11 @@ class SearchView(BaseView):
     @expose("/browse/<int:dataset_id>", methods=["GET", "POST"])
     def browse(self, dataset_id):
         dataset = db.session.query(models.Dataset).get_or_404(dataset_id)
+
+        # Make sure the user has access
+        if not dataset.user_has_access():
+            abort(403)
+
         comments = (
             db.session.query(models.DatasetComment)
             .filter(models.DatasetComment.dataset_id == dataset.id)
@@ -204,6 +207,7 @@ class DataSourceView(ModelView):
         "name",
         "description",
         "type",
+        "roles",
     ]
 
     show_columns = [
