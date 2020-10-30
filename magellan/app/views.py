@@ -150,7 +150,11 @@ class ConsoleView(BaseView):
                 )
             )
 
-        datasets = db.session.query(models.Dataset).all()
+        datasets = [
+            d
+            for d in db.session.query(models.Dataset).all()
+            if d.user_has_access()
+        ]
         if dataset_id:
             dataset = (
                 db.session.query(models.Dataset)
@@ -172,13 +176,22 @@ class ConsoleView(BaseView):
             query_form.format.checked = True
 
         if dataset:
+
+            if not dataset.user_has_access():
+                abort(403)
+
             query_form.dataset.process_data(dataset.id)
             msg = "Table name: {table}"
             clean_table = clean_table_name(dataset.name)
             query_form.dataset.description = msg.format(table=clean_table)
 
         if dataset and query:
+
+            if not dataset.user_has_access():
+                abort(403)
+
             results = query_dataset(dataset, query)
+
         else:
             results = "<p>No results!</p>"
 
