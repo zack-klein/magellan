@@ -19,7 +19,7 @@ from magellan.app.database import db
 from magellan.app.fab import appbuilder
 from magellan.app.forms import SearchForm, CommentForm, QueryForm
 from magellan.extractors.main import extract_datasets
-from magellan.samplers.main import get_sample_data
+from magellan.samplers.main import get_sample_data, get_df
 from magellan.query import query_dataset, clean_table_name
 
 
@@ -98,6 +98,7 @@ class SearchView(BaseView):
             .all()
         )
         comment_form = CommentForm()
+        columns = get_df(dataset).columns
         sample_data = get_sample_data(
             dataset, masked_fields=app.config["MASKED_FIELDS"]
         )
@@ -120,6 +121,7 @@ class SearchView(BaseView):
             comment_form=comment_form,
             sample_data=sample_data,
             comments=comments,
+            columns=columns,
         )
 
 
