@@ -1,19 +1,34 @@
 # Magellan
 
-A simple but powerful Data Catalog built on top of Flask, Elasticsearch, and pandas.
+A simple but powerful Data Catalog built on top of [Flask](https://readthedocs.org/projects/flask/), [Elasticsearch](https://www.elastic.co/guide/en/elastic-stack-get-started/current/index.html), and [Pandas](https://pandas.pydata.org/).
+
+:warning: **DISCLAIMER:** This package is still under active development and isn't quite production ready. For this reason, I've chosen to not list it on PyPi (yet!). That said, please use it! Any and all contributions are welcome. Once it has been battle tested it will be listed on PyPi and installation will be typical for a Python package. Stay tuned!
 
 # Getting started
 
-:warning: **WARNING:** This package is not yet available on PyPi! This getting started guide is not quite accurate -- but it will be soon. Stay tuned.
+Installation is done via git:
 
-```
-pip install magellan-catalog
+```bash
+git clone https://github.com/zack-klein/magellan.git
+cd ./magellan
+pip install .
 ```
 
-:warning: **WARNING:** To really leverage Magellan, you should use it with Elasticsearch. You can bring your own Elasticsearch (running locally or via a hosted service like AWS Elasticsearch). Just point Magellan to your Elasticsearch endpoint by setting the following environment variable:
+:memo: **NOTE:** To really leverage Magellan, you should use it with [Elasticsearch](https://www.elastic.co/guide/en/elastic-stack-get-started/current/index.html). You can bring your own Elasticsearch (running locally or via a hosted service like AWS Elasticsearch Service). Just point Magellan to your Elasticsearch endpoint by setting the following environment variable:
 
+```bash
+export MAGELLAN__ELASTICSEARCH_URL=localhost:9200
 ```
-MAGELLAN__ELASTICSEARCH_URL=localhost:9200
+
+Next up, you'll want to initialize the database:
+```bash
+magellan initdb
+```
+
+After the database has been created, you can create the first user:
+
+```bash
+magellan create-admin
 ```
 
 :white_check_mark: That's all you need! Magellan is now ready to go:
@@ -25,15 +40,6 @@ magellan webserver
 Head to http://localhost:8080/ to see the web interface. You'll hit the login screen.
 
 ![](./docs/imgs/splash.png)
-
-Next, go ahead and create an admin user:
-
-```
-magellan create-admin
-```
-
-
-:warning: **WARNING:** You should really only create *the first user* via the CLI. Other users can be handled via the Flask FAB UI.
 
 # Features
 
@@ -52,7 +58,7 @@ Supported `Source`s:
 
 ## Tag `Source`s and `Dataset`s with useful metadata en masse
 
-Magellan allows you to create `Rule`s that will apply searchable `Tag`s to Datasets at extraction time. A few clicks and thousands of entries of useful metadata will be created.
+Magellan allows you to apply searchable `Tag`s to Datasets at extraction time. A few clicks and thousands of entries of useful metadata will be created.
 
 ## Blazing fast search with Elasticsearch
 
