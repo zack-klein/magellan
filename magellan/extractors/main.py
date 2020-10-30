@@ -18,23 +18,10 @@ def extract_datasets(data_source, extractors=EXTRACTORS):
     extractor = extractors.get(data_source.type)
     datasets = extractor(data_source)
 
-    # Make sure each dataset has required tags
-    rules = (
-        db.session.query(models.DataSourceRule)
-        .filter(models.DataSourceRule.data_source_id == data_source.id)
-        .all()
-    )
-
-    required_tags = []
-    for rule in rules:
-
-        if rule.tags:
-            required_tags += rule.tags
-
     for dataset in datasets:
 
-        # Enforce any dataset rules
-        for tag in required_tags:
+        # Enforce any dataset tags
+        for tag in data_source.tags:
 
             if tag not in dataset.tags:
                 dataset.tags.append(tag)
