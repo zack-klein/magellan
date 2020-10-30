@@ -13,11 +13,11 @@ from flask_appbuilder.security.decorators import has_access
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 from flask_appbuilder.models.group import aggregate_count
 
+from magellan import app
 from magellan.app import models
 from magellan.app.database import db
 from magellan.app.fab import appbuilder
 from magellan.app.forms import SearchForm, CommentForm, QueryForm
-
 from magellan.extractors.main import extract_datasets
 from magellan.samplers.main import get_sample_data
 from magellan.query import query_dataset, clean_table_name
@@ -98,7 +98,9 @@ class SearchView(BaseView):
             .all()
         )
         comment_form = CommentForm()
-        sample_data = get_sample_data(dataset)
+        sample_data = get_sample_data(
+            dataset, masked_fields=app.config["MASKED_FIELDS"]
+        )
         if request.method == "POST":
             comment = models.DatasetComment(
                 user_id=current_user.id,
