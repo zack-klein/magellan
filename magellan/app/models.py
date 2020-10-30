@@ -31,6 +31,18 @@ roles_data_source = db.Table(
     db.Column("role_id", db.Integer(), db.ForeignKey("ab_role.id")),
 )
 
+data_source_tags = db.Table(
+    "data_source_tags",
+    db.Model.metadata,
+    db.Column("id", db.Integer, primary_key=True),
+    db.Column(
+        "data_source",
+        db.Integer(),
+        db.ForeignKey("data_source.id"),
+    ),
+    db.Column("tag_id", db.Integer(), db.ForeignKey("dataset_tag.id")),
+)
+
 
 class DataSource(db.Model, SearchableMixin):
     """
@@ -52,6 +64,12 @@ class DataSource(db.Model, SearchableMixin):
         backref="data_source",
         doc="Roles that are allowed to see this data source.",
     )
+    tags = relationship(
+        "DatasetTag",
+        secondary=data_source_tags,
+        backref="data_source_tags",
+        doc="Tags for this dataset.",
+    )
     icon = "fa-database"
 
     def __str__(self):
@@ -65,6 +83,7 @@ class DataSource(db.Model, SearchableMixin):
             "name": self.name,
             "description": self.description,
             "type": self.type.value,
+            "tags": " ".join([t.name for t in self.tags]),
         }
 
     def user_has_access(self):
@@ -75,48 +94,6 @@ class DataSource(db.Model, SearchableMixin):
                 return True
 
         return False
-
-
-data_source_rules_dataset_tags = db.Table(
-    "data_source_rules_dataset_tags",
-    db.Model.metadata,
-    db.Column("id", db.Integer, primary_key=True),
-    db.Column(
-        "data_source_rule_id",
-        db.Integer(),
-        db.ForeignKey("data_source_rule.id"),
-    ),
-    db.Column("tag_id", db.Integer(), db.ForeignKey("dataset_tag.id")),
-)
-
-
-class DataSourceRule(db.Model, SearchableMixin):
-    """
-    A rule that all datasets under a data source must follow.
-    """
-
-    __searchable__ = ["name", "description", "tags"]
-
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(500))
-    data_source_id = db.Column(
-        db.Integer, db.ForeignKey("data_source.id"), nullable=False
-    )
-    data_source = relationship("DataSource")
-    tags = relationship(
-        "DatasetTag",
-        secondary=data_source_rules_dataset_tags,
-        backref="data_source_rule",
-        doc="Rules that datasets in this data source must follow.",
-    )
-
-    def to_searchable(self):
-        return {
-            "name": self.name,
-            "description": self.description,
-            "tags": " ".join([t.name for t in self.tags]),
-        }
 
 
 # Many to many table between datasets and tags

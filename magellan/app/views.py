@@ -243,18 +243,6 @@ class DataSourceView(ModelView):
         return redirect(url_for("DataSourceView.list"))
 
 
-class DataSourceRuleView(ModelView):
-    route_base = "/rules"
-    datamodel = SQLAInterface(models.DataSourceRule)
-
-    list_columns = [
-        "name",
-        "data_source",
-        "description",
-        "tags",
-    ]
-
-
 class DatasetView(ModelView):
     route_base = "/datasets"
     datamodel = SQLAInterface(models.Dataset)
@@ -315,7 +303,6 @@ appbuilder.add_view(
     DatasetView, "Datasets", category="Govern", icon="fa-table"
 )
 appbuilder.add_separator(category="Govern")
-appbuilder.add_view(DataSourceRuleView, "Rules", category="Govern")
 appbuilder.add_view(DatasetTagView, "Tags", category="Govern", icon="fa-tags")
 appbuilder.add_view(
     DatasetChartView,
