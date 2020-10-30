@@ -210,12 +210,14 @@ class DataSourceView(ModelView):
         "description",
         "type",
         "roles",
+        "tags",
     ]
 
     show_columns = [
         "name",
         "description",
         "type",
+        "tags",
     ]
 
     list_columns = [
